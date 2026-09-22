@@ -1,133 +1,67 @@
-# MAPVNet: A Multi-Agent AI Framework for Multi-Resolution Photovoltaic Panel Detection
+# MAPVNet: A Resolution-Aware Multi-Agent Framework for Multi-Resolution Photovoltaic Panel Detection
 
-[![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/)
-[![PyTorch 2.1](https://img.shields.io/badge/pytorch-2.1.2-orange.svg)](https://pytorch.org/)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
+[![PyTorch 2.5.1](https://img.shields.io/badge/pytorch-2.5.1-orange.svg)](https://pytorch.org/)
+[![CUDA 12.1](https://img.shields.io/badge/CUDA-12.1-green.svg)](https://developer.nvidia.com/cuda-toolkit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> **Paper:** MAPVNet: A Multi-Agent AI Framework for Multi-Resolution Photovoltaic Panel Detection from Satellite, Aerial, and UAV Imagery  
+> **Paper:** MAPVNet: A Resolution-Aware Multi-Agent Framework for Photovoltaic Panel Detection from Multi-Resolution Remote Sensing Imagery  
 > **Authors:** Amreen Batool, Yong-Woon Kim, Yung-Cheol Byun  
-> **Institution:** Jeju National University, South Korea  
+> **Institution:** Jeju National University, Republic of Korea  
 > **Dataset:** [Jiang et al. 2021](https://doi.org/10.5281/zenodo.5171712)
 
 ---
 
 ## Overview
 
-MAPVNet coordinates **six specialised agents** for multi-resolution PV panel detection:
+MAPVNet is a **resolution-aware multi-agent AI framework** designed for photovoltaic (PV) panel segmentation across heterogeneous satellite, aerial, and UAV remote-sensing imagery.
 
-| Agent | Role | Model |
-|-------|------|-------|
+The framework coordinates six functional agents for visual orchestration, resolution and context-aware routing, resolution-specific segmentation, geospatial processing, UAV anomaly assessment, and automated reporting.
+
+| Agent | Role | Model / Tool |
+|---|---|---|
 | Agent 1 | VLM Orchestrator | Qwen2.5-VL-7B |
-| Agent 2 | Resolution & Context Router | EfficientNet-B2 |
-| Agent 3a | PV08 Specialist (0.8 m satellite) | SegFormer-B2 |
-| Agent 3b | PV03 Specialist (0.3 m aerial) | SegFormer-B4 |
-| Agent 3c | PV01 Specialist (0.1 m UAV) | Swin-UNet |
-| Agent 4 | Cross-Resolution Fusion | Rasterio + GDAL |
-| Agent 5 | Anomaly Detection | PatchCore |
-| Agent 6 | Report Generation | — |
+| Agent 2 | Resolution & Context Router | EfficientNet-B2 + deterministic GSD routing |
+| Agent 3a | PV08 Specialist — Satellite, 0.8 m GSD | SegFormer-B2 |
+| Agent 3b | PV03 Specialist — Aerial, 0.3 m GSD | SegFormer-B4 |
+| Agent 3c | PV01 Specialist — UAV, 0.1 m GSD | Swin-UNet |
+| Agent 4 | Geospatial Processing | Rasterio + GDAL |
+| Agent 5 | UAV Anomaly Assessment | PatchCore / Anomalib |
+| Agent 6 | Operational Report Generation | JSON + TXT + GeoTIFF + interactive map |
 
-## Results
+A confidence gate is applied after specialist segmentation. Predictions below the operational threshold can enter a re-processing loop using CLAHE and test-time augmentation.
 
-| Model | PV08 IoU | PV03 IoU | PV01 IoU | Mean IoU |
-|-------|----------|----------|----------|----------|
-| MAPVNet (Ours) | **0.8052** | **0.8569** | **0.9020** | **0.8547** |
-| Kleebauer et al. 2023 | 0.8234 | 0.8512 | 0.8198 | 0.8315 |
-| SegFormer-B4 (unified) | 0.7812 | 0.8850 | 0.8102 | 0.8255 |
-
-## Installation
-
-```bash
-git clone https://github.com/Amreen-source/MAPVNet.git
-cd MAPVNet
-conda create -n pv_env python=3.10
-conda activate pv_env
-pip install -r requirements.txt
-```
+---
 
 ## Dataset
 
-Download the Jiang et al. 2021 dataset from Zenodo:
-```bash
-wget https://zenodo.org/record/5171712/files/PV_dataset.zip
-unzip PV_dataset.zip -d data/
-```
+Experiments use the publicly available **Jiang et al. (2021) multi-resolution photovoltaic dataset**.
+
+The dataset contains **3,716 image-mask pairs** covering three sensing resolutions:
+
+| Subset | Sensor | GSD | Total | Train | Validation | Test |
+|---|---|---:|---:|---:|---:|---:|
+| PV08 | Gaofen-2 / Beijing-2 satellite | 0.8 m | 763 | 534 | 114 | 115 |
+| PV03 | Aerial photography | 0.3 m | 2,308 | 1,615 | 346 | 347 |
+| PV01 | UAV orthophoto | 0.1 m | 645 | 451 | 96 | 98 |
+| **Total** | **3 platforms** | — | **3,716** | **2,600** | **556** | **560** |
+
+All partitions use a fixed random seed of **42**.
+
+Download the dataset from:
+
+https://doi.org/10.5281/zenodo.5171712
 
 Expected structure:
-```
+
+```text
 data/
 ├── PV08/
-│   ├── images/   # 763 .bmp files
-│   └── masks/    # 763 _label.bmp files
+│   ├── images/
+│   └── masks/
 ├── PV03/
-│   ├── images/   # 2308 .bmp files
-│   └── masks/    # 2308 _label.bmp files
-├── PV01/
-│   ├── images/   # 645 .bmp files
-│   └── masks/    # 645 _label.bmp files
-└── router/
-    ├── images/   # 2072 PV03 .bmp files
-    └── labels.json
-```
-
-## Training
-
-**Step 1 — Train the background context router:**
-```bash
-python training/train_router.py
-```
-
-**Step 2 — Train the three specialist models:**
-```bash
-python training/train_specialists.py --resolution PV08
-python training/train_specialists.py --resolution PV03
-python training/train_specialists.py --resolution PV01
-```
-
-## Evaluation
-
-**Evaluate specialists (produces real IoU values):**
-```bash
-python evaluation/eval_specialists.py
-```
-
-**Evaluate router:**
-```bash
-python evaluation/eval_router.py
-```
-
-**Run full pipeline on a single image:**
-```bash
-python pipeline.py --image path/to/image.bmp
-```
-
-## Pretrained Checkpoints
-
-| Model | Checkpoint | Val IoU |
-|-------|-----------|---------|
-| SegFormer-B2 (PV08) | `models/segformer_b2_pv08.pth` | 0.8254 |
-| SegFormer-B4 (PV03) | `models/segformer_b4_pv03.pth` | 0.8613 |
-| Swin-UNet (PV01) | `models/swinunet_pv01.pth` | 0.9030 |
-| EfficientNet-B2 (Router) | `models/efficientnet_b2_router.pth` | 75.48% |
-
-Checkpoints available upon paper acceptance.
-
-## Citation
-
-```bibtex
-@article{batool2025mapvnet,
-  title   = {MAPVNet: A Multi-Agent AI Framework for Multi-Resolution
-             Photovoltaic Panel Detection from Satellite, Aerial, and UAV Imagery},
-  author  = {Batool, Amreen and Kim, Yong-Woon and Byun, Yung-Cheol},
-  journal = {Applied Energy},
-  year    = {2025}
-}
-```
-
-## License
-
-MIT License — see [LICENSE](LICENSE) for details.
-
-## Acknowledgements
-
-Supported by the National Research Foundation of Korea (NRF) grant RS-2024-00405278
-and the Regional Innovation System Education (RISE) program 2026-RISE-17-001.
+│   ├── images/
+│   └── masks/
+└── PV01/
+    ├── images/
+    └── masks/
