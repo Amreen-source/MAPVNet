@@ -96,5 +96,117 @@ data/
 │   └── masks/        # 645 masks
 │
 └── router/
+## Training
+
+### Step 1 — Train the Background Context Router
+
+```bash
+python training/train_router.py
+```
+
+### Step 2 — Train the Resolution-Specific Specialist Models
+
+**PV08 — SegFormer-B2**
+```bash
+python training/train_specialists.py --resolution PV08
+```
+
+**PV03 — SegFormer-B4**
+```bash
+python training/train_specialists.py --resolution PV03
+```
+
+**PV01 — Swin-UNet**
+```bash
+python training/train_specialists.py --resolution PV01
+```
+
+### Step 3 — Train the Unified Baseline
+
+```bash
+python training/train_unified_baseline.py
+```
+
+---
+
+## Evaluation
+
+### Evaluate the Specialist Models
+
+```bash
+python evaluation/eval_specialists.py
+```
+
+### Evaluate the Context Router
+
+```bash
+python evaluation/eval_router.py
+```
+
+### Evaluate the Unified Baseline
+
+```bash
+python evaluation/eval_unified_baseline.py
+```
+
+### Run the Full MAPVNet Pipeline
+
+```bash
+python pipeline.py --image path/to/image.bmp
+```
+
+---
+
+## Pretrained Checkpoints
+
+| Model | Checkpoint | Best Validation Performance |
+|---|---|---:|
+| SegFormer-B2 (PV08) | `checkpoints/segformer_b2_pv08.pth` | IoU = **0.8642** |
+| SegFormer-B4 (PV03) | `checkpoints/segformer_b4_pv03.pth` | IoU = **0.9082** |
+| Swin-UNet (PV01) | `checkpoints/swinunet_pv01.pth` | IoU = **0.9208** |
+| EfficientNet-B2 (Context Router) | `checkpoints/efficientnet_b2_router.pth` | Accuracy = **88.20%** |
+| Unified SegFormer-B4 | `checkpoints/segformer_b4_unified.pth` | Mean Test IoU = **0.8156** |
+
+The specialist checkpoints correspond to the best validation checkpoints selected during training.
+
+Large pretrained model files are not stored directly in the Git repository. Download links and checkpoint hashes will be provided with the public model release.
+
+---
+
+## Citation
+
+If you use MAPVNet in your research, please cite:
+
+```bibtex
+@article{batool2026mapvnet,
+  title   = {MAPVNet: A Resolution-Aware Multi-Agent Framework for Photovoltaic Panel Detection from Multi-Resolution Remote Sensing Imagery},
+  author  = {Batool, Amreen and Kim, Yong-Woon and Byun, Yung-Cheol},
+  journal = {To appear},
+  year    = {2026}
+}
+```
+
+The citation will be updated with the journal name, DOI, volume, issue, and page numbers after publication.
+
+---
+
+## License
+
+This project is released under the **MIT License**. See [LICENSE](LICENSE) for details.
+
+---
+
+## Acknowledgements
+
+This work was supported by the National Research Foundation of Korea (NRF) grants funded by the Korean government (MSIT):
+
+- **RS-2024-00405278**
+- **RS-2026-25470261**
+
+---
+
+## Contact
+
+For questions regarding MAPVNet, reproducibility, or research collaboration, please open an issue in this repository or contact the corresponding author.
     ├── images/
     └── labels.json
