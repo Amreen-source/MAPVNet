@@ -1,0 +1,14 @@
+cff-version: 1.2.0
+message: "If you use MAPVNet, please cite the associated paper."
+title: "MAPVNet: A Resolution-Aware Multi-Agent Framework for Photovoltaic Panel Detection from Multi-Resolution Remote Sensing Imagery"
+type: software
+authors:
+  - family-names: Batool
+    given-names: Amreen
+  - family-names: Kim
+    given-names: Yong-Woon
+  - family-names: Byun
+    given-names: Yung-Cheol
+repository-code: "https://github.com/Amreen-source/MAPVNet"
+version: "1.0.0-rc1"
+license: MIT
