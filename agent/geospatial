@@ -1,1 +1,29 @@
 
+from pathlib import Path
+import rasterio
+from rasterio.transform import from_bounds
+from rasterio.crs import CRS
+
+GSD_METERS={"PV08":0.8,"PV03":0.3,"PV01":0.1}
+
+def write_geotiff(mask, resolution, lat, lon, output_path):
+    gsd=GSD_METERS[resolution]
+    h,w=mask.shape
+    width_m=w*gsd
+    height_m=h*gsd
+    lat_extent=height_m/111320.0
+    lon_scale=max(1e-6,111320.0)
+    lon_extent=width_m/lon_scale
+    transform=from_bounds(
+        lon-lon_extent/2, lat-lat_extent/2,
+        lon+lon_extent/2, lat+lat_extent/2,
+        w,h
+    )
+    output_path=Path(output_path)
+    output_path.parent.mkdir(parents=True,exist_ok=True)
+    with rasterio.open(
+        output_path,"w",driver="GTiff",height=h,width=w,count=1,
+        dtype=rasterio.uint8,crs=CRS.from_epsg(4326),transform=transform
+    ) as dst:
+        dst.write(mask.astype("uint8"),1)
+    return str(output_path)
