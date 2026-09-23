@@ -1,0 +1,14 @@
+from pathlib import Path
+
+def make_image_mask_pairs(image_dir, mask_dir):
+    image_dir = Path(image_dir)
+    mask_dir = Path(mask_dir)
+    pairs = []
+    for image_path in sorted(image_dir.iterdir()):
+        if not image_path.is_file():
+            continue
+        stem = image_path.stem
+        mask_path = mask_dir / f"{stem}_label{image_path.suffix}"
+        if mask_path.exists():
+            pairs.append((str(image_path), str(mask_path)))
+    return pairs
