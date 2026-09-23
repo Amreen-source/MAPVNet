@@ -1,0 +1,60 @@
+import json
+import os
+import numpy as np
+import torch
+from torch.utils.data import DataLoader, random_split
+from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+import timm
+
+from config import *
+from training.train_router import RouterDataset, load_samples, val_tf
+
+def main():
+    torch.manual_seed(SEED)
+    np.random.seed(SEED)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    samples = load_samples()
+    n = len(samples)
+    n_tr = int(n * TRAIN_RATIO)
+    n_val = int(n * VAL_RATIO)
+    n_te = n - n_tr - n_val
+    gen = torch.Generator().manual_seed(SEED)
+    _, _, test_subset = random_split(samples, [n_tr, n_val, n_te], generator=gen)
+
+    loader = DataLoader(
+        RouterDataset(list(test_subset), val_tf),
+        batch_size=BATCH_ROUTER, shuffle=False, num_workers=4
+    )
+
+    model = timm.create_model(
+        "efficientnet_b2", pretrained=False, num_classes=len(PV03_BACKGROUNDS)
+    )
+    ckpt = torch.load(CKPT_ROUTER, map_location=device)
+    state = ckpt.get("model_state_dict", ckpt)
+    model.load_state_dict(state, strict=True)
+    model.to(device).eval()
+
+    y_true, y_pred = [], []
+    with torch.no_grad():
+        for x, y in loader:
+            pred = model(x.to(device)).argmax(1).cpu()
+            y_true.extend(y.numpy().tolist())
+            y_pred.extend(pred.numpy().tolist())
+
+    result = {
+        "accuracy": float(accuracy_score(y_true, y_pred)),
+        "n_test": len(y_true),
+        "classes": PV03_BACKGROUNDS,
+        "confusion_matrix": confusion_matrix(y_true, y_pred).tolist(),
+        "classification_report": classification_report(
+            y_true, y_pred, target_names=PV03_BACKGROUNDS, output_dict=True, zero_division=0
+        ),
+    }
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    with open(os.path.join(OUTPUT_DIR, "router_eval_results.json"), "w") as f:
+        json.dump(result, f, indent=2)
+    print(json.dumps(result, indent=2))
+
+if __name__ == "__main__":
+    main()
