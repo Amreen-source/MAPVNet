@@ -1,1 +1,54 @@
+ó
 
+    yÌ±j  ã                   ó  • S r SSKr\R                  R                  \R                  R	                  \5      5      r\R                  R                  \S5      r\R                  R                  \S5      r	\R                  R                  \S5      r
+\R                  " \	SS9  \R                  " \
+SS9  \R                  R                  \SS	5      r\R                  R                  \SS
+5      r
+\R                  R                  \SS	5      r\R                  R                  \SS
+5      r\R                  R                  \SS	5      r\R                  R                  \SS
+5      r\R                  R                  \S
+5      r\R                  R                  \S	5      r\R                  R                  \S5      r\R                  R                  \	S5      r\R                  R                  \	S5      r\R                  R                  \	S5      r\R                  R                  \	S5      r\R                  R                  \	S5      rSrSrSrSrSrSrSr Sr!Sr"Sr#/ SQr$/ SQr%Sr&Sr'S r(S r)S!r*S"r+S#r,S r-S$r./ S%Qr/Sr0S&r1S'r2S(r3Sr4S'r5S)r6Sr7Sr8S*r9S+r:g),uŽ   
+config.py â€” MAPVNet Global Configuration
+=========================================
+All paths, hyperparameters, and constants in one place.
+é    NÚdataÚmodelsÚoutputsT)Úexist_okÚPV08ÚimagesÚmasksÚPV03ÚPV01Úrouterzlabels.jsonzsegformer_b2_pv08.pthzsegformer_b4_pv03.pthzswinunet_pv01.pthzefficientnet_b2_router.pthzsegformer_b4_unified.pthgffffffæ?g333333Ã?é*   é   é{   éÔ   i   éà   )g
+×£p=
+ß?gÉv¾Ÿ/Ý?g–C‹lçûÙ?)gZd;ßOÍ?gyé&1¬Ì?gÍÌÌÌÌÌÌ?é   é2   g-Cëâ6?gíµ ÷Æ°>é   é   é    )ÚcroplandÚ	grasslandÚ	shrublandÚ
+water_surfaceÚ
+saline_alkalié   g      à?gffffffÖ?zQwen/Qwen2.5-VL-7B-Instructi   é   );Ú__doc__ÚosÚpathÚdirnameÚabspathÚ__file__ÚROOTÚjoinÚ	DATA_ROOTÚ
+MODEL_ROOTÚ
+OUTPUT_DIRÚmakedirsÚPV08_IMG_DIRÚPV08_MSK_DIRÚPV03_IMG_DIRÚPV03_MSK_DIRÚPV01_IMG_DIRÚPV01_MSK_DIRÚ
+ROUTER_DIRÚROUTER_IMGSÚ
+ROUTER_LABELSÚ	CKPT_PV08Ú	CKPT_PV03Ú	CKPT_PV01ÚCKPT_ROUTERÚCKPT_UNIFIEDÚTRAIN_RATIOÚ	VAL_RATIOÚSEEDÚ
+MASK_VAL_PV08Ú
+MASK_VAL_PV03Ú
+MASK_VAL_PV01Ú
+IMG_SIZE_PV08Ú
+IMG_SIZE_PV03Ú
+IMG_SIZE_PV01ÚROUTER_SIZEÚIMG_MEANÚIMG_STDÚ
+BATCH_SIZEÚEPOCHSÚLRÚWEIGHT_DECAYÚLR_MINÚ
+WARMUP_EPOCHSÚ
+EPOCHS_ROUTERÚ	LR_ROUTERÚBATCH_ROUTERÚPV03_BACKGROUNDSÚCONF_THRESHOLDÚMAX_RETRIESÚFUSION_WEIGHT_PV01ÚFUSION_WEIGHT_PV03ÚFUSION_WEIGHT_PV08ÚFUSION_THRESHOLDÚVLM_MODEL_IDÚVLM_QUANTIZEÚVLM_MAX_TOKENSÚSEGFORMER_DECODER_HIDDENÚSEGFORMER_NUM_LABELS© ó    Ú1/mnt/data/MAPVNet_Publication_Candidate/config.pyÚ<module>r\      su  ðñó 
+à
+W‰W_‰_˜RŸW™WŸ_™_¨XÓ6Ó
+7€Ø
+W‰W\‰\˜$ Ó
+'€	Ø
+W‰W\‰\˜$ Ó
+)€
+Ø
+W‰W\‰\˜$ 	Ó
+*€
+à ‡‚ˆJ Ò &Ø ‡‚ˆJ Ò &ð w‰w|‰|˜I v¨xÓ8€Øw‰w|‰|˜I v¨wÓ7€Øw‰w|‰|˜I v¨xÓ8€Øw‰w|‰|˜I v¨wÓ7€Øw‰w|‰|˜I v¨xÓ8€Øw‰w|‰|˜I v¨wÓ7€Øw‰w|‰|˜I xÓ0€
+Øw‰w|‰|˜J¨Ó1€Øw‰w|‰|˜J¨
+Ó6€
+ð g‰gl‰l˜:Ð'>Ó?€	Øg‰gl‰l˜:Ð'>Ó?€	Øg‰gl‰l˜:Ð':Ó;€	Øg‰gl‰l˜:Ð'CÓD€Øg‰gl‰l˜:Ð'AÓB€ð €Ø€	à€ð €
+Ø€
+Ø€
+ð €
+Ø€
+Ø€
+Ø€ò !€Ú €ð €
+Ø€Ø€Ø€Ø€Ø€
+ð €
+Ø€	Ø€òÐ ð €Ø€ð Ð ØÐ ØÐ ØÐ ð .€Ø€Ø€ð Ð ØÑ rZ   
