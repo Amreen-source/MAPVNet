@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "== Python syntax =="
+python -m compileall -q .
+
+echo "== Suspicious secrets/private files =="
+grep -RInE '(api[_-]?key|secret|token|password|BEGIN PRIVATE KEY)' . \
+  --exclude-dir=.git --exclude='pre_release_audit.sh' || true
+
+echo "== Absolute /home paths =="
+grep -RIn '/home/' . --exclude-dir=.git || true
+
+echo "== Large files =="
+find . -type f -size +50M -print
+
+echo "== Missing checkpoint policy =="
+find . -type f \( -name '*.pth' -o -name '*.pt' -o -name '*.ckpt' \) -print
+
+echo "Audit complete."
