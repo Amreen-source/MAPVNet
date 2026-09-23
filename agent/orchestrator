@@ -1,1 +1,36 @@
+from pathlib import Path
+
+def parse_resolution_and_gps(image_path):
+    """Deterministic metadata parser used for reproducible routing."""
+    p = Path(image_path)
+    fn = p.name
+    resolution = next((r for r in ("PV08", "PV03", "PV01") if fn.startswith(r)), None)
+    if resolution is None:
+        raise ValueError(f"Resolution prefix not found in filename: {fn}")
+
+    parts = p.stem.split("_")
+    try:
+        lat = float(parts[1]) / 1e4
+        lon = float(parts[2]) / 1e4
+    except (IndexError, ValueError):
+        lat = lon = 0.0
+    return {"resolution": resolution, "lat": lat, "lon": lon, "filename": fn}
+
+
+class QwenOrchestrator:
+    """
+    Optional Qwen2.5-VL orchestration wrapper.
+
+    IMPORTANT:
+    The exact prompt, quantization settings and structured-output schema used for
+    the paper must be copied from the original experimental implementation before
+    this class is claimed to reproduce Agent 1.
+    """
+    def __init__(self, model_id="Qwen/Qwen2.5-VL-7B-Instruct"):
+        self.model_id = model_id
+
+    def inspect(self, image_path):
+        raise NotImplementedError(
+            "Insert the exact Qwen2.5-VL orchestration code used in the paper here."
+        )
 
