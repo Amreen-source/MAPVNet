@@ -1,1 +1,19 @@
+import json
+from pathlib import Path
+
+def summarize_result(task, panel_pixels, confidence, status):
+    return {
+        "filename": task["filename"],
+        "resolution": task["resolution"],
+        "lat": float(task.get("lat",0.0)),
+        "lon": float(task.get("lon",0.0)),
+        "panel_pixels": int(panel_pixels),
+        "confidence": float(confidence),
+        "status": status,
+    }
+
+def save_json(summary, path):
+    path=Path(path); path.parent.mkdir(parents=True,exist_ok=True)
+    path.write_text(json.dumps(summary,indent=2),encoding="utf-8")
+    return str(path)
 
