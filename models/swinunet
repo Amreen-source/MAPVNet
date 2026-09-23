@@ -1,0 +1,23 @@
+"""
+PV01 Swin-UNet compatibility boundary.
+
+IMPORTANT
+---------
+The exact Swin-UNet source used to produce the paper checkpoint was not included
+in the GitHub ZIP supplied for this audit. A generic replacement would not be
+scientifically honest because its state-dict layout may not match the reported
+checkpoint.
+
+Before public archival release, replace this file with the EXACT Swin-UNet
+implementation used for training the PV01 checkpoint.
+"""
+import torch.nn as nn
+
+class SwinUNet(nn.Module):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        raise RuntimeError(
+            "Exact PV01 Swin-UNet implementation is missing. "
+            "Replace models/swinunet.py with the original training implementation "
+            "before running PV01 training/evaluation or publishing reproducibility claims."
+        )
