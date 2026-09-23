@@ -1,0 +1,102 @@
+"""
+Unified SegFormer-B4 baseline.
+
+This is a clean reference implementation for the ablation experiment. Before
+publication, verify preprocessing and split membership against the exact baseline
+used to produce the paper's reported IoU values.
+"""
+import os
+import numpy as np
+import torch
+import torch.nn.functional as F
+from torch.utils.data import DataLoader, Dataset, random_split
+from torchvision import transforms
+from PIL import Image
+from transformers import SegformerConfig, SegformerForSemanticSegmentation
+from config import *
+from training.train_specialists import make_pairs, combined_loss
+
+class UnifiedDataset(Dataset):
+    def __init__(self, pairs, size=512, augment=False):
+        self.pairs = pairs
+        self.img_tf = transforms.Compose([
+            transforms.Resize((size,size)),
+            transforms.ToTensor(),
+            transforms.Normalize(IMG_MEAN, IMG_STD),
+        ])
+        self.msk_tf = transforms.Compose([
+            transforms.Resize((size,size), interpolation=transforms.InterpolationMode.NEAREST),
+            transforms.ToTensor(),
+        ])
+        self.augment = augment
+        self.aug = transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomVerticalFlip(),
+            transforms.RandomRotation(15),
+        ])
+    def __len__(self): return len(self.pairs)
+    def __getitem__(self, i):
+        ip, mp = self.pairs[i]
+        img = Image.open(ip).convert("RGB")
+        msk = Image.open(mp).convert("L")
+        if self.augment:
+            img = self.aug(img)
+        return self.img_tf(img), self.msk_tf(msk)
+
+def build_model():
+    cfg = SegformerConfig(
+        num_encoder_blocks=4,
+        depths=[3,8,27,3],
+        hidden_sizes=[64,128,320,512],
+        num_attention_heads=[1,2,5,8],
+        decoder_hidden_size=SEGFORMER_DECODER_HIDDEN,
+        num_labels=1,
+    )
+    return SegformerForSemanticSegmentation(cfg)
+
+def main():
+    torch.manual_seed(SEED); np.random.seed(SEED)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    pairs = []
+    for a,b in [(PV08_IMG_DIR,PV08_MSK_DIR),(PV03_IMG_DIR,PV03_MSK_DIR),(PV01_IMG_DIR,PV01_MSK_DIR)]:
+        pairs += make_pairs(a,b)
+
+    n=len(pairs); ntr=int(n*TRAIN_RATIO); nv=int(n*VAL_RATIO); nt=n-ntr-nv
+    gen=torch.Generator().manual_seed(SEED)
+    tr, va, _ = random_split(pairs,[ntr,nv,nt],generator=gen)
+    trl=DataLoader(UnifiedDataset(list(tr),512,True),batch_size=BATCH_SIZE,shuffle=True,num_workers=4)
+    val=DataLoader(UnifiedDataset(list(va),512,False),batch_size=BATCH_SIZE,shuffle=False,num_workers=4)
+
+    model=build_model().to(device)
+    opt=torch.optim.AdamW(model.parameters(),lr=LR,weight_decay=WEIGHT_DECAY)
+    sch=torch.optim.lr_scheduler.CosineAnnealingLR(opt,T_max=EPOCHS,eta_min=LR_MIN)
+    best=-1.0
+    for ep in range(1,EPOCHS+1):
+        model.train()
+        for x,y in trl:
+            x,y=x.to(device),y.to(device)
+            opt.zero_grad()
+            z=model(pixel_values=x).logits
+            z=F.interpolate(z,size=y.shape[-2:],mode="bilinear",align_corners=False)
+            loss=combined_loss(z,y)
+            loss.backward(); opt.step()
+        sch.step()
+
+        model.eval(); vals=[]
+        with torch.no_grad():
+            for x,y in val:
+                x,y=x.to(device),y.to(device)
+                z=model(pixel_values=x).logits
+                z=F.interpolate(z,size=y.shape[-2:],mode="bilinear",align_corners=False)
+                p=(torch.sigmoid(z)>0.5); t=(y>0)
+                inter=(p&t).sum((1,2,3)).float()
+                union=(p|t).sum((1,2,3)).float()
+                vals.extend(torch.where(union>0,inter/union,torch.ones_like(union)).cpu().tolist())
+        viou=float(np.mean(vals))
+        print(f"epoch={ep} val_iou={viou:.4f}")
+        if viou>best:
+            best=viou
+            torch.save({"epoch":ep,"model_state_dict":model.state_dict(),"val_iou":viou},CKPT_UNIFIED)
+
+if __name__=="__main__":
+    main()
