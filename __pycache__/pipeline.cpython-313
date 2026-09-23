@@ -1,1 +1,201 @@
+ó
 
+    …Qj‰)  ã                   óR  • S r SSKrSSKrSSKrSSKrSSKrSSKrSSKJ	s  J
+r  SSKJ
+r
+  SSKJr  SSKrSSKJr  SSKJr  SSKrSSK7  S rS	 rS
+ rS rS rS
+ rS r\S:X  aD  \R>                  " SS9r \ RC                  SSSS9  \ RE                  5       r#\" \#RH                  5        gg)u%  
+pipeline.py â€” MAPVNet Full Inference Pipeline
+==============================================
+Runs all six agents on a single input image.
+
+Usage:
+    python pipeline.py --image data/PV01/images/PV01_325123_1204226.bmp
+    python pipeline.py --image data/PV03/images/PV03_338280_1204261.bmp
+é    N)Ú
+transforms©ÚImage)Úfrom_bounds)ÚCRS)Ú*c                 ó¾   • [         R                  " [         R                  " X 45      [         R                  " 5       [         R                  " [
+        [        5      /5      $ )N)r   ÚComposeÚResizeÚToTensorÚ	NormalizeÚIMG_MEANÚIMG_STD)Úimg_sizes    Ú3/mnt/data/MAPVNet_Publication_Candidate/pipeline.pyÚget_tfr      sG   € Ü×ÒÜ×Ò˜8Ð.Ó/Ü×ÒÓÜ×ÒœX¤wÓ/ðó ð ó    c                 ód  • [         R                  R                  U 5      nS Hd  nUR                  U5      (       d  M  UR	                  SS5      R                  S5      n [
+        US   5      S-  n[
+        US   5      S-  nX$XQS	.s  $    [        S
+U 35      e! [        [        4 a    Su  pE N-f = f)zEParse resolution and GPS from filename. Falls back to VLM if unclear.©ÚPV08ÚPV03ÚPV01z.bmpÚ Ú_é   g     ˆÃ@é   )ç        r   )Ú
+resolutionÚlatÚlonÚfilenamez+Cannot determine resolution from filename: )	ÚosÚpathÚbasenameÚ
+startswithÚreplaceÚsplitÚfloatÚ
+IndexErrorÚ
+ValueError)Ú
+image_pathÚfnÚresÚpartsr   r    s         r   Úagent1_parser/   "   s´   € ä	‰×	Ñ	˜*Ó	%€Bã'ˆØ
+=‰=˜×ÓØ—J‘J˜v rÓ*×0Ñ0°Ó5ˆEð
+$Ü˜E !™H“o¨Ñ+Ü˜E !™H“o¨Ñ+ð #&¸#ÑNÒNñ (ô ÐBÀ2À$ÐGÓ
+HÐHøô ¤
+Ð+ó 
+$Ø#‘‘Sð
+$ús   Á"BÂB/Â.B/c                 óú  • U S   nSnUS:X  GaS  SSK nUR                  SS[        [        5      S9n[        R
+                  " [        US	9nS
+U;   a  US
+   nUR                  USS9  UR                  5       R                  U5        [        R                  " U S   5      R                  S
+5      n[        [        5      n[        R                  " 5          U" U" U5      R!                  S5      R                  U5      5      n	U	SS2S[        [        5      24   R#                  S5      R%                  5       n
+SSS5        [        W
+   nA[        R&                  R)                  5         X0S'   X S'   U $ ! , (       d  f       N@= f)z@Deterministic routing + optional PV03 background classification.r   Úunknownr   r   NÚefficientnet_b2F)Ú
+pretrainedÚnum_classes©Úmap_locationÚmodel_state_dict©Ústrictr+   ÚRGBr   ÚcontextÚ
+specialist)ÚtimmÚcreate_modelÚlenÚPV03_BACKGROUNDSÚtorchÚloadÚCKPT_ROUTERÚload_state_dictÚevalÚtor   ÚopenÚconvertr   ÚROUTER_SIZEÚno_gradÚ	unsqueezeÚargmaxÚitemÚcudaÚempty_cache)ÚtaskÚdevicer   r;   r=   ÚmodelÚckptÚimgÚtfÚlogitsÚidxs              r   Úagent2_routerX   3   sJ  € àlÑ#€JØ€GàVÔÛØ×!Ñ!Ð"3ÀÜ/2Ô3CÓ/Dð "ð Fˆä—
+’
+œ;°VÑ<ˆØ Ó%¨dÐ3EÑ.F tà
+×Ñ˜d¨5ÐÑ1Ø
+
+‰
+‹‰˜ÔÜjŠj˜˜lÑ+Ó,×4Ñ4°UÓ;ˆÜ”[Ó!ˆÜ
+]Š]_Ù™2˜c›7×,Ñ,¨QÓ/×2Ñ2°6Ó:Ó;ˆFØšAÐ5¤Ô$4Ó 5Ð5Ð5Ñ6×=Ñ=¸aÓ@×EÑEÓGˆC÷ ô # 3Ñ'ˆØ”5—:‘:×)Ñ)Ô+à ˆOØ#ˆÑØ€K÷ _ús
+   ÃA"E,Å,
+E:c           	      óâ  • SSK JnJn  U S   nU S   nUS:X  a  [        nOUS:X  a  [        O[
+        n[
+        U5      " [        R                  " U5      R                  S5      5      R                  S5      R                  U5      nUS:X  a'  SSKJ
+n  U" 5       n	[        R                  " [         US	9n
+O[US:X  a  S
+OSn/ SQ/ S
+QS.U   nU" SU/ SQ/ SQ["        [$        S9n
+U" U
+5      n	US:X  a  [&        O[(        n[        R                  " XáS	9n
+SU
+;   a  U
+S   n
+U	R+                  U
+SS9  U	R-                  5       R                  U5        [        R.                  " 5          US:X  a	  U	" U5      nO(U	" US9R0                  n[2        R4                  " XöU4SSS9nS S S 5        [        R6                  " W5      R9                  5       R;                  5       R=                  5       nUS:„  R?                  [@        RB                  5      n[E        URG                  5       5      nA	[        RH                  RK                  5         U[L        :  a  [O        SUS S35        UU S'   UU S'   UU S '   U $ ! , (       d  f       NÓ= f)!Nr   )Ú SegformerForSemanticSegmentationÚSegformerConfigr   r+   r   r   r:   )ÚSwinUNetr5   Úb2Úb4)é   é   é   r_   )r_   é   é   r_   )r]   r^   r`   )é@   é€   i@  é   )r   r   é   rb   )Únum_encoder_blocksÚdepthsÚhidden_sizesÚnum_attention_headsÚdecoder_hidden_sizeÚ
+num_labelsr7   Tr8   )Úpixel_valuesÚbilinearF)ÚsizeÚmodeÚ
+align_cornersg      à?z  [WARN] Low confidence (ú.4fu"   ) â€” consider re-running with TTAÚmaskÚ
+confidenceÚprob_map)(ÚtransformersrZ   r[   Ú
+IMG_SIZE_PV01Ú
+IMG_SIZE_PV08Ú
+IMG_SIZE_PV03r   r   rG   rH   rK   rF   Úmodels.swinunetr\   rA   rB   Ú	CKPT_PV01ÚSEGFORMER_DECODER_HIDDENÚSEGFORMER_NUM_LABELSÚ	CKPT_PV08Ú	CKPT_PV03rD   rE   rJ   rV   ÚFÚinterpolateÚsigmoidÚsqueezeÚcpuÚnumpyÚastypeÚnpÚuint8r(   ÚmaxrN   rO   ÚCONF_THRESHOLDÚprint)rP   rQ   rZ   r[   r   Úimg_pathr   rT   r\   rR   ÚstateÚbackboneri   ÚcfgrS   rV   Úprobrt   Úconfs                      r   Úagent3_segmentr“   O   s"  € ßNàlÑ#€JØlÑ#€Hð VÓÜ ‰à$.°&Ó$8•=¼mˆÜ
+Ô
+œ5Ÿ:š: hÓ/×7Ñ7¸Ó>Ó
+?×
+IÑ
+IÈ!Ó
+L×
+OÑ
+OÐPVÓ
+W€Cð VÓÝ,Ù“
+ˆÜ—
+’
+œ9°6Ñ:‰à%¨Ó/‘4°TˆÚ&ªmÑ<¸XÑFˆÙØ ¨Ú,Â,Ü 8Ü+ñ	
+ˆñ 1°Ó5ˆØ'¨6Ó1•	´yˆÜ—
+’
+˜4Ñ5ˆà˜UÓ"¨EÐ2DÑ,E EØ	×Ñ˜%¨ÐÑ-Ø	‡JJƒL‡OOFÔä	ŠØ˜ÓÙ˜3“Z‰Fá¨Ñ,×3Ñ3ˆFÜ—]’] 6¸8Ð0DØ(2À%ñIˆF÷ 
+ô ]Š]˜6Ó
+"×
+*Ñ
+*Ó
+,×
+0Ñ
+0Ó
+2×
+8Ñ
+8Ó
+:€DØS‰j×
+ Ñ
+ ¤§¡Ó
+*€DÜ
+4—8‘8“:Ó
+€Dà
+Œuz‰z×%Ñ%Ô'ð ŒnÓÜ
+Ð)¨$¨s¨Ð3UÐVÔWà€DˆLØ€DˆÑØ€DˆÑØ€K÷+ 
+ús   Å8I É 
+I.c                 ó`  • 0 nU  H   nUS   R                  [        5      XS   '   M"     SSKJn  SnU H{  nX   R                  S   U:w  d  M  [
+        R                  " UR                  X   R                  [
+        R                  5      5      R                  XD4UR                  5      5      X'   M}     [
+        R                  " XD45      nSU;   a  U[        US   -  -
+  nSU;   a  U[        US   -  -
+  nSU;   a  U[        US   -  -
+  nU[        :¬  R                  [
+        R                  5      nU$ )	z7Weighted fusion of specialist masks into WGS84 GeoTIFF.rt   r   r   r   rf   r   r   r   )r‡   r(   ÚPILr   Úshaperˆ   ÚarrayÚ	fromarrayr‰   ÚresizeÚNEARESTÚzerosÚFUSION_WEIGHT_PV01ÚFUSION_WEIGHT_PV03ÚFUSION_WEIGHT_PV08ÚFUSION_THRESHOLD)ÚtasksÚmasksÚtÚPILImageÚtargetÚkÚfusedÚbinarys           r   Úagent4_fuser¨   ‹   s  € à€EÛ
+ˆØ!" 6¡×!1Ñ!1´%Ó!8ˆ‰oÓñ õ &Ø
+€FÛ
+ˆØ‰8>‰>˜!Ñ Õ&Ü—x’xØ×"Ñ" 5¡8§?¡?´2·8±8Ó#<Ó=×DÑDØÐ$ h×&6Ñ&6ó8ó9ˆE‹Hñ ô 
+HŠHfÐ%Ó&€EØ
+ƒ˜Ô!3°e¸F±mÑ!CÑC˜Ø
+ƒ˜Ô!3°e¸F±mÑ!CÑC˜Ø
+ƒ˜Ô!3°e¸F±mÑ!CÑC˜ØÔ'Ñ'×
+/Ñ
+/´·±Ó
+9€Fà€Mr   c                 óX  • [         R                  " USS9  U R                  SS5      nU R                  SS5      nU S   nU R                  SS5      nUn[        UR	                  5       5      n[        US-  S	5      n	US
+-  n
+[         R                  R                  U S   5      S   nS
+S SU S    SU SUS SUS SUS SU	S SU
+S SUS SU[        :¼  a  SOS S3n[        [         R                  R                  X+ S35      S5       n
+U
+R                  U5        S S S 5        U S   UX4UXšUSS .	n[        [         R                  R                  X+ S!35      S5       n
+[        R                  " XíS	S"9  S S S 5        S#S$S%S&.R                  US%5      nUR                  S   U-  S'-  n[        UUS	-  -
+  UUS	-  -
+  UUS	-  -   UUS	-  -   UR                  S(   UR                  S   5      n[         R                  R                  X+ S)35      n[         R                  " USS*UR                  S   UR                  S(   S([         R"                  [$        R&                  " S+5      US,9	 nUR                  US(5        S S S 5        [(        R*                  " X4/S-S.S/S09n[(        R,                  " X4/[(        R.                  " S1U S2U
+S S3U	S S4US5 S63	S7S89S99R1                  U5        UR3                  [         R                  R                  X+ S:35      5        [5        SS; 35        [5        S<U 35        [5        S=US SUS S>35        [5        S?U	S S@35        [5        SAUS 35        [5        SBU SC35        [5        S; 5        g ! , (       d  f       GNd= f! , (       d  f       GN= f! , (       d  f       GN/= f)DNT)Úexist_okr   r   r    r   ru   g{®Gáz„?r   é   r!   r   zMAPVNet Detection Report
+z(========================================z
+Image:       z
+Resolution:  z
+GPS Centre:  rs   õ   Â°N, u   Â°E
+Panel px:    Ú,z
+Total Area:  z,.2fu    mÂ²
+Est. Panels: z
+Confidence:  z
+Status:      ÚNORMALÚLOW_CONFÚ
+z_report.txtÚw)	r!   r   r   r    Úpanel_pixelsÚ
+total_area_m2Úestimated_panelsru   Ústatusz
+_summary.json)Úindentgš™™™™™é?g333333Ó?gš™™™™™¹?r   iØ² r   z	_mask.tifÚGTiffiæ  )ÚdriverÚheightÚwidthÚcountÚdtypeÚcrsÚ	transformé   z2https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}zGoogle Satellite)ÚlocationÚ
+zoom_startÚtilesÚattrz<b>z</b><br>Panels: z
+<br>Area: u    mÂ²<br>Conf: z.3fz
+<br>NORMALéÈ   )Ú	max_width)Úpopupz	_map.htmlz-=============================================z  Resolution:  z  GPS:         õ   Â°Ez  Panel area:  u    mÂ²z  Confidence:  u     Outputs saved â†’ Ú/)r"   ÚmakedirsÚgetÚintÚsumÚroundr#   Úsplitextr‹   rG   ÚjoinÚwriteÚjsonÚdumpr–   r   Úrasterior‰   r   Ú	from_epsgÚfoliumÚMapÚMarkerÚPopupÚadd_toÚsaverŒ   )rP   Ú
+fused_maskÚout_dirr   r    r-   r’   rt   Úpanel_pxÚ
+total_areaÚpanel_countÚbaseÚreportÚfÚ	json_dataÚgsdÚextentr¾   Ú	tiff_pathÚdstÚms                        r   Ú
+agent6_reportré   ¥   sÅ  € Ü‡K‚K $Ò'Ø8‰8E˜3Ó€CØ8‰8E˜3Ó€CØÑ€CØ8‰8L #Ó&€DØ€Däd—h‘h“j“/€HÜ˜ 4™¨Ó+€JØ˜b‘.€Kä
+7‰7×Ñ˜D Ñ,Ó-¨aÑ0€Dð %Øˆ(ð Ø˜ZÑ(Ð)ð *Øuð Ø˜Cy  c¨# Yð /Ø  |ð $Ø" 4Ð(ð )Ø# Að 'Ø˜Szð "Ø$(¬NÓ$:™À
+ÐKÈ2ð		Oð ô 
+Œbg‰gl‰l˜7 f¨KÐ$8Ó9¸3Ô	?À1Ø	‰Œ÷ 
+@ð " *Ñ-¸SØ¸Ø",Ø#¨xñ9€Iô 
+Œbg‰gl‰l˜7 f¨MÐ$:Ó;¸SÔ	AÀQÜ	Š	) qÒ)÷ 
+Bð  3°Ñ
+4×
+8Ñ
+8¸¸cÓ
+B€CØ
+Z‰Z˜‰]˜SÑ
+  6Ñ
+)€FÜ˜C &¨¡(™N¨C°&¸±(©NØ  6¨!¡8™^¨S°6¸!±8©^Ø!ŸZ™Z¨™]¨D¯J©J°q©Mó;€Iô —‘—‘˜W¨¨iÐ&8Ó9€IÜ	Šy #¨gØ"Ÿj™j¨™m°4·:±:¸a±=Ø¤h§n¡nÜŸ=š=¨Ó.¸)ò
+Eð ILØ	‰	$˜Ô÷	
+Eô 	
+Š
+˜S˜J°2ØMØ*ñ	,€Aô ‡M‚M3*¤F§L¢LØ
+
+ˆcˆUÐ" ;¨q /ð 2Ø˜A˜n¨T°#¨J°jð	Bàñ%ñ ÷ ™˜qœ	Ø‡FFŒ27‰7<‰<˜ 6¨Ð!3Ó4Ô5ä	ˆBˆvˆhˆ-ÔÜ	ˆO˜C˜5Ð
+!Ô"Ü	ˆO˜C ˜9 E¨#¨c¨°#Ð
+6Ô7Ü	ˆO˜J tÐ,¨DÐ
+1Ô2Ü	ˆO˜D ˜:Ð
+&Ô'Ü	Ð   	¨Ð
++Ô,Ü	ˆVˆHÕ÷Q 
+@Ö	?ú÷ 
+BÖ	Aú÷
+Eö 
+Eús$   ÄM6ÅNÉNÍ6
+NÎ
+NÎ
+N)c           	      ó¨  • [         R                  " [         R                  R                  5       (       a  SOS5      n[	        SU 35        [	        SU  S35        [        U 5      nXS'   [	        SUS    S	US
+   S SUS
+   S S35        [
+        X!5      n[	        SUS    35        [        X!5      n[	        SUS   S SUS   R                  5       S 35        [        U/5      n[	        SUR                  5       S S35        [        R                  R                  [        [        R                  R                  US   5      S   5      n[        X#U5        g )NrN   r…   zMAPVNet Inference | Device: zInput: r°   r+   u   Agent 1 â†’ Resolution: r   z | GPS: r   rs   r¬   r    rÇ   u   Agent 2 â†’ Context: r;   u   Agent 3 â†’ Confidence: ru   z
+ | Panel px: rt   r­   u   Agent 4 â†’ Fused mask: z pxr!   r   )rA   rQ   rN   Úis_availablerŒ   r/   rX   r“   rÌ   r¨   r"   r#   rÏ   Ú
+OUTPUT_DIRrÎ   ré   )r+   rQ   rP   r¦   rÜ   s        r   Úmainrí   ì   sW  € Ü
+\Š\¤E§J¡J×$;Ñ$;×$=Ñ$=™&À5Ó
+I€FÜ	Ð(¨¨Ð
+1Ô2Ü	ˆGJ<˜rÐ
+"Ô#ô ˜
+Ó#€DØ#ˆÑÜ	Ð$ T¨,Ñ%7Ð$8ð 9Øu‘+˜cÐ" %¨¨U©°CÐ'8¸ð=ô >ô ˜Ó%€DÜ	Ð! $ y¡/Ð!2Ð
+3Ô4ô ˜$Ó'€DÜ	Ð$ T¨,Ñ%7¸Ð$<ð =Ø˜F‘|×'Ñ'Ó)¨!Ð,ð.ô /ô 
+˜˜Ó€EÜ	Ð$ U§Y¡Y£[° O°3Ð
+7Ô8ô g‰gl‰lœ:¤r§w¡w×'7Ñ'7¸¸ZÑ8HÓ'IÈ!Ñ'LÓM€GÜ$˜wÕ'r   Ú__main__zMAPVNet Inference Pipeline)Údescriptionz--imageTzPath to input .bmp image)ÚrequiredÚhelp)%Ú__doc__Úargparser"   rÑ   Úrer†   rˆ   rA   Útorch.nn.functionalÚnnÚ
+functionalr   Útorchvisionr   r•   r   rÓ   Úrasterio.transformr   Úrasterio.crsr   rÕ   Úconfigr   r/   rX   r“   r¨   ré   rí   Ú__name__ÚArgumentParserÚparserÚadd_argumentÚ
+parse_argsÚargsÚimage© r   r   Ú<module>r     sª   ðñ÷ × Û Û ß Ð Ý "Ý Û Ý *Ý Û 
+Ü òò
+Iò"ò88òxò4CòN(ð: ˆzÓØ
+×
+$Ò
+$Ð1MÑ
+N€FØ
+×Ñ˜	¨DÐ7QÐÑRØ×ÑÓ€DÙˆ‰Õð	 r   
