@@ -1,0 +1,7 @@
+import config
+
+def test_core_config():
+    assert config.SEED == 42
+    assert config.IMG_SIZE_PV08 == 512
+    assert config.IMG_SIZE_PV03 == 512
+    assert config.CONF_THRESHOLD == 0.70
