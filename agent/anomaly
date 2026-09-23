@@ -1,1 +1,17 @@
+class PatchCoreAnomalyAssessor:
+    """
+    Thin integration boundary for the PV01 PatchCore/Anomalib model.
+
+    The exact exported PatchCore checkpoint format and preprocessing pipeline used
+    in the paper were not present in the uploaded GitHub repository. Insert the
+    original implementation before claiming full paper reproduction.
+    """
+    def __init__(self, checkpoint=None):
+        self.checkpoint=checkpoint
+
+    def predict(self, image_path):
+        raise NotImplementedError(
+            "Copy the exact PatchCore/Anomalib inference code and checkpoint "
+            "preprocessing from the original experimental project."
+        )
 
