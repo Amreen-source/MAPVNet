@@ -1,54 +1,374 @@
-ó
+"""
+MAPVNet Global Configuration
+============================
 
-    yÌ±j  ã                   ó  • S r SSKr\R                  R                  \R                  R	                  \5      5      r\R                  R                  \S5      r\R                  R                  \S5      r	\R                  R                  \S5      r
-\R                  " \	SS9  \R                  " \
-SS9  \R                  R                  \SS	5      r\R                  R                  \SS
-5      r
-\R                  R                  \SS	5      r\R                  R                  \SS
-5      r\R                  R                  \SS	5      r\R                  R                  \SS
-5      r\R                  R                  \S
-5      r\R                  R                  \S	5      r\R                  R                  \S5      r\R                  R                  \	S5      r\R                  R                  \	S5      r\R                  R                  \	S5      r\R                  R                  \	S5      r\R                  R                  \	S5      rSrSrSrSrSrSrSr Sr!Sr"Sr#/ SQr$/ SQr%Sr&Sr'S r(S r)S!r*S"r+S#r,S r-S$r./ S%Qr/Sr0S&r1S'r2S(r3Sr4S'r5S)r6Sr7Sr8S*r9S+r:g),uŽ   
-config.py â€” MAPVNet Global Configuration
-=========================================
-All paths, hyperparameters, and constants in one place.
-é    NÚdataÚmodelsÚoutputsT)Úexist_okÚPV08ÚimagesÚmasksÚPV03ÚPV01Úrouterzlabels.jsonzsegformer_b2_pv08.pthzsegformer_b4_pv03.pthzswinunet_pv01.pthzefficientnet_b2_router.pthzsegformer_b4_unified.pthgffffffæ?g333333Ã?é*   é   é{   éÔ   i   éà   )g
-×£p=
-ß?gÉv¾Ÿ/Ý?g–C‹lçûÙ?)gZd;ßOÍ?gyé&1¬Ì?gÍÌÌÌÌÌÌ?é   é2   g-Cëâ6?gíµ ÷Æ°>é   é   é    )ÚcroplandÚ	grasslandÚ	shrublandÚ
-water_surfaceÚ
-saline_alkalié   g      à?gffffffÖ?zQwen/Qwen2.5-VL-7B-Instructi   é   );Ú__doc__ÚosÚpathÚdirnameÚabspathÚ__file__ÚROOTÚjoinÚ	DATA_ROOTÚ
-MODEL_ROOTÚ
-OUTPUT_DIRÚmakedirsÚPV08_IMG_DIRÚPV08_MSK_DIRÚPV03_IMG_DIRÚPV03_MSK_DIRÚPV01_IMG_DIRÚPV01_MSK_DIRÚ
-ROUTER_DIRÚROUTER_IMGSÚ
-ROUTER_LABELSÚ	CKPT_PV08Ú	CKPT_PV03Ú	CKPT_PV01ÚCKPT_ROUTERÚCKPT_UNIFIEDÚTRAIN_RATIOÚ	VAL_RATIOÚSEEDÚ
-MASK_VAL_PV08Ú
-MASK_VAL_PV03Ú
-MASK_VAL_PV01Ú
-IMG_SIZE_PV08Ú
-IMG_SIZE_PV03Ú
-IMG_SIZE_PV01ÚROUTER_SIZEÚIMG_MEANÚIMG_STDÚ
-BATCH_SIZEÚEPOCHSÚLRÚWEIGHT_DECAYÚLR_MINÚ
-WARMUP_EPOCHSÚ
-EPOCHS_ROUTERÚ	LR_ROUTERÚBATCH_ROUTERÚPV03_BACKGROUNDSÚCONF_THRESHOLDÚMAX_RETRIESÚFUSION_WEIGHT_PV01ÚFUSION_WEIGHT_PV03ÚFUSION_WEIGHT_PV08ÚFUSION_THRESHOLDÚVLM_MODEL_IDÚVLM_QUANTIZEÚVLM_MAX_TOKENSÚSEGFORMER_DECODER_HIDDENÚSEGFORMER_NUM_LABELS© ó    Ú1/mnt/data/MAPVNet_Publication_Candidate/config.pyÚ<module>r\      su  ðñó 
-à
-W‰W_‰_˜RŸW™WŸ_™_¨XÓ6Ó
-7€Ø
-W‰W\‰\˜$ Ó
-'€	Ø
-W‰W\‰\˜$ Ó
-)€
-Ø
-W‰W\‰\˜$ 	Ó
-*€
-à ‡‚ˆJ Ò &Ø ‡‚ˆJ Ò &ð w‰w|‰|˜I v¨xÓ8€Øw‰w|‰|˜I v¨wÓ7€Øw‰w|‰|˜I v¨xÓ8€Øw‰w|‰|˜I v¨wÓ7€Øw‰w|‰|˜I v¨xÓ8€Øw‰w|‰|˜I v¨wÓ7€Øw‰w|‰|˜I xÓ0€
-Øw‰w|‰|˜J¨Ó1€Øw‰w|‰|˜J¨
-Ó6€
-ð g‰gl‰l˜:Ð'>Ó?€	Øg‰gl‰l˜:Ð'>Ó?€	Øg‰gl‰l˜:Ð':Ó;€	Øg‰gl‰l˜:Ð'CÓD€Øg‰gl‰l˜:Ð'AÓB€ð €Ø€	à€ð €
-Ø€
-Ø€
-ð €
-Ø€
-Ø€
-Ø€ò !€Ú €ð €
-Ø€Ø€Ø€Ø€Ø€
-ð €
-Ø€	Ø€òÐ ð €Ø€ð Ð ØÐ ØÐ ØÐ ð .€Ø€Ø€ð Ð ØÑ rZ   
+Central configuration for dataset paths, model checkpoints,
+training hyperparameters, preprocessing settings, confidence
+handling, and MAPVNet agent configuration.
+
+The dataset statistics and experimental settings follow the
+MAPVNet manuscript.
+"""
+
+import os
+from pathlib import Path
+
+
+# ============================================================
+# PROJECT PATHS
+# ============================================================
+
+ROOT = Path(__file__).resolve().parent
+
+DATA_ROOT = ROOT / "data"
+MODEL_ROOT = ROOT / "checkpoints"
+OUTPUT_DIR = ROOT / "outputs"
+
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+MODEL_ROOT.mkdir(parents=True, exist_ok=True)
+
+
+# ============================================================
+# DATASET PATHS
+# ============================================================
+
+# PV08 — Satellite imagery, 0.8 m GSD
+PV08_DIR = DATA_ROOT / "PV08"
+PV08_IMG_DIR = PV08_DIR / "images"
+PV08_MSK_DIR = PV08_DIR / "masks"
+
+# PV03 — Aerial imagery, 0.3 m GSD
+PV03_DIR = DATA_ROOT / "PV03"
+PV03_IMG_DIR = PV03_DIR / "images"
+PV03_MSK_DIR = PV03_DIR / "masks"
+
+# PV01 — UAV imagery, 0.1 m GSD
+PV01_DIR = DATA_ROOT / "PV01"
+PV01_IMG_DIR = PV01_DIR / "images"
+PV01_MSK_DIR = PV01_DIR / "masks"
+
+# Context-router dataset
+ROUTER_DIR = DATA_ROOT / "router"
+ROUTER_IMGS = ROUTER_DIR / "images"
+ROUTER_LABELS = ROUTER_DIR / "labels.json"
+
+
+# ============================================================
+# DATASET STATISTICS
+# Manuscript Section 3.1 / Table 1
+# ============================================================
+
+DATASET_COUNTS = {
+    "PV08": {
+        "total": 763,
+        "train": 534,
+        "val": 114,
+        "test": 115,
+        "gsd": 0.8,
+        "sensor": "Satellite",
+    },
+    "PV03": {
+        "total": 2308,
+        "train": 1615,
+        "val": 346,
+        "test": 347,
+        "gsd": 0.3,
+        "sensor": "Aerial",
+    },
+    "PV01": {
+        "total": 645,
+        "train": 451,
+        "val": 96,
+        "test": 98,
+        "gsd": 0.1,
+        "sensor": "UAV",
+    },
+}
+
+TOTAL_IMAGES = 3716
+TOTAL_TRAIN = 2600
+TOTAL_VAL = 556
+TOTAL_TEST = 560
+
+
+# ============================================================
+# DATA SPLIT
+# ============================================================
+
+TRAIN_RATIO = 0.70
+VAL_RATIO = 0.15
+TEST_RATIO = 0.15
+
+SEED = 42
+
+
+# ============================================================
+# MODEL CHECKPOINTS
+# ============================================================
+
+CKPT_PV08 = MODEL_ROOT / "segformer_b2_pv08.pth"
+CKPT_PV03 = MODEL_ROOT / "segformer_b4_pv03.pth"
+CKPT_PV01 = MODEL_ROOT / "swinunet_pv01.pth"
+
+CKPT_ROUTER = MODEL_ROOT / "efficientnet_b2_router.pth"
+
+CKPT_UNIFIED = MODEL_ROOT / "segformer_b4_unified.pth"
+
+CKPT_PATCHCORE = MODEL_ROOT / "patchcore_pv01.ckpt"
+
+
+# ============================================================
+# IMAGE SIZE
+# ============================================================
+
+# Manuscript preprocessing configuration
+IMG_SIZE_PV08 = 512
+IMG_SIZE_PV03 = 512
+IMG_SIZE_PV01 = 224
+
+ROUTER_SIZE = 260
+
+
+# ============================================================
+# IMAGE NORMALIZATION
+# ImageNet statistics
+# ============================================================
+
+IMG_MEAN = (
+    0.485,
+    0.456,
+    0.406,
+)
+
+IMG_STD = (
+    0.229,
+    0.224,
+    0.225,
+)
+
+
+# ============================================================
+# MASK CONFIGURATION
+# ============================================================
+
+# All non-zero ground-truth values are converted to PV = 1.
+MASK_BACKGROUND_VALUE = 0
+MASK_PV_VALUE = 1
+
+SEGMENTATION_THRESHOLD = 0.50
+
+
+# ============================================================
+# SPECIALIST TRAINING CONFIGURATION
+# ============================================================
+
+BATCH_SIZE = 4
+
+EPOCHS = 50
+
+LR = 1e-4
+LR_MIN = 1e-6
+
+WEIGHT_DECAY = 1e-4
+
+WARMUP_EPOCHS = 5
+
+OPTIMIZER = "AdamW"
+LR_SCHEDULER = "CosineAnnealing"
+
+DICE_WEIGHT = 0.50
+BCE_WEIGHT = 0.50
+
+
+# ============================================================
+# SEGFORMER CONFIGURATION
+# ============================================================
+
+SEGFORMER_DECODER_HIDDEN = 256
+SEGFORMER_NUM_LABELS = 1
+
+
+# ============================================================
+# CONTEXT ROUTER
+# ============================================================
+
+ROUTER_MODEL = "efficientnet_b2"
+
+EPOCHS_ROUTER = 30
+LR_ROUTER = 1e-4
+BATCH_ROUTER = 32
+
+PV03_BACKGROUNDS = [
+    "cropland",
+    "grassland",
+    "shrubwood",
+    "water_surface",
+    "saline_alkali",
+]
+
+
+# ============================================================
+# RESOLUTION-SPECIFIC SPECIALISTS
+# ============================================================
+
+SPECIALIST_MODELS = {
+    "PV08": "SegFormer-B2",
+    "PV03": "SegFormer-B4",
+    "PV01": "Swin-UNet",
+}
+
+
+# ============================================================
+# CONFIDENCE GATE
+# ============================================================
+
+CONF_THRESHOLD = 0.70
+
+MAX_RETRIES = 3
+
+CLAHE_CLIP_LIMIT = 2.0
+
+TTA_ENABLED = True
+
+TTA_TRANSFORMS = [
+    "original",
+    "horizontal_flip",
+    "vertical_flip",
+    "horizontal_vertical_flip",
+]
+
+
+# ============================================================
+# VLM ORCHESTRATOR
+# ============================================================
+
+VLM_MODEL_ID = "Qwen/Qwen2.5-VL-7B-Instruct"
+
+VLM_QUANTIZE = True
+
+VLM_QUANTIZATION_BITS = 4
+
+VLM_MAX_TOKENS = 512
+
+
+# ============================================================
+# GEOSPATIAL CONFIGURATION
+# ============================================================
+
+CRS = "EPSG:4326"
+
+GSD_METERS = {
+    "PV08": 0.8,
+    "PV03": 0.3,
+    "PV01": 0.1,
+}
+
+
+# ============================================================
+# ANOMALY ASSESSMENT
+# ============================================================
+
+PATCHCORE_ENABLED = True
+
+PATCHCORE_RESOLUTION = "PV01"
+
+ANOMALY_MODEL = "PatchCore"
+
+
+# ============================================================
+# REPORTED MANUSCRIPT RESULTS
+# ============================================================
+
+SPECIALIST_RESULTS = {
+    "PV08": {
+        "IoU": 0.8834,
+        "F1": 0.9381,
+        "Precision": 0.9126,
+        "Recall": 0.9651,
+        "Accuracy": 0.9840,
+    },
+    "PV03": {
+        "IoU": 0.9405,
+        "F1": 0.9693,
+        "Precision": 0.9600,
+        "Recall": 0.9789,
+        "Accuracy": 0.9828,
+    },
+    "PV01": {
+        "IoU": 0.9394,
+        "F1": 0.9687,
+        "Precision": 0.9765,
+        "Recall": 0.9611,
+        "Accuracy": 0.9807,
+    },
+}
+
+MAPVNET_MACRO_RESULTS = {
+    "IoU": 0.9211,
+    "F1": 0.9587,
+    "Precision": 0.9497,
+    "Recall": 0.9684,
+    "Accuracy": 0.9825,
+}
+
+
+# ============================================================
+# ABLATION RESULTS
+# ============================================================
+
+UNIFIED_IOU = {
+    "PV08": 0.7621,
+    "PV03": 0.8850,
+    "PV01": 0.7998,
+    "Mean": 0.8156,
+}
+
+SPECIALIST_IOU = {
+    "PV08": 0.8834,
+    "PV03": 0.9405,
+    "PV01": 0.9394,
+    "Mean": 0.9211,
+}
+
+
+# ============================================================
+# BEST VALIDATION CHECKPOINTS
+# ============================================================
+
+BEST_VALIDATION = {
+    "PV08": {
+        "epoch": 17,
+        "IoU": 0.8642,
+    },
+    "PV03": {
+        "epoch": 33,
+        "IoU": 0.9082,
+    },
+    "PV01": {
+        "epoch": 36,
+        "IoU": 0.9208,
+    },
+}
+
+
+# ============================================================
+# OUTPUT FILES
+# ============================================================
+
+REPORT_DIR = OUTPUT_DIR / "reports"
+GEOTIFF_DIR = OUTPUT_DIR / "geotiff"
+JSON_DIR = OUTPUT_DIR / "json"
+MAP_DIR = OUTPUT_DIR / "maps"
+MASK_DIR = OUTPUT_DIR / "masks"
+
+for directory in [
+    REPORT_DIR,
+    GEOTIFF_DIR,
+    JSON_DIR,
+    MAP_DIR,
+    MASK_DIR,
+]:
+    directory.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
