@@ -1,0 +1,48 @@
+"""
+Evaluate the unified SegFormer-B4 baseline separately on PV08, PV03 and PV01.
+Verify split membership against the exact paper experiment before archival release.
+"""
+import json, os, numpy as np, torch
+import torch.nn.functional as F
+from torch.utils.data import DataLoader, random_split
+from config import *
+from training.train_unified_baseline import build_model, UnifiedDataset
+from training.train_specialists import make_pairs
+from utils.metrics import binary_segmentation_metrics
+
+def test_subset(img_dir, msk_dir):
+    pairs=make_pairs(img_dir,msk_dir)
+    n=len(pairs); ntr=int(n*TRAIN_RATIO); nv=int(n*VAL_RATIO); nt=n-ntr-nv
+    gen=torch.Generator().manual_seed(SEED)
+    _,_,te=random_split(pairs,[ntr,nv,nt],generator=gen)
+    return list(te)
+
+def main():
+    device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model=build_model()
+    ckpt=torch.load(CKPT_UNIFIED,map_location=device)
+    model.load_state_dict(ckpt.get("model_state_dict",ckpt),strict=True)
+    model.to(device).eval()
+    out={}
+    for name,idir,mdir in [
+        ("PV08",PV08_IMG_DIR,PV08_MSK_DIR),
+        ("PV03",PV03_IMG_DIR,PV03_MSK_DIR),
+        ("PV01",PV01_IMG_DIR,PV01_MSK_DIR),
+    ]:
+        loader=DataLoader(UnifiedDataset(test_subset(idir,mdir),512,False),batch_size=BATCH_SIZE,shuffle=False)
+        rows=[]
+        with torch.no_grad():
+            for x,y in loader:
+                x,y=x.to(device),y.to(device)
+                z=model(pixel_values=x).logits
+                z=F.interpolate(z,size=y.shape[-2:],mode="bilinear",align_corners=False)
+                rows.append(binary_segmentation_metrics(z,y))
+        out[name]={k:float(np.mean([r[k] for r in rows])) for k in rows[0]}
+    out["Mean"]={k:float(np.mean([out[r][k] for r in ("PV08","PV03","PV01")])) for k in out["PV08"]}
+    os.makedirs(OUTPUT_DIR,exist_ok=True)
+    with open(os.path.join(OUTPUT_DIR,"unified_eval_results.json"),"w") as f:
+        json.dump(out,f,indent=2)
+    print(json.dumps(out,indent=2))
+
+if __name__=="__main__":
+    main()
