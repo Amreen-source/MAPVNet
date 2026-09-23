@@ -1,1 +1,58 @@
+agents/__init__.py
 
+"""
+MAPVNet multi-agent components.
+
+This package contains the orchestration, routing, confidence-aware
+processing, geospatial analysis, anomaly assessment, and reporting
+components used by the MAPVNet framework.
+"""
+
+__all__ = []
+
+models/__init__.py
+
+"""
+Neural network architectures used by MAPVNet.
+
+Specialist models:
+    PV08: SegFormer-B2
+    PV03: SegFormer-B4
+    PV01: Swin-UNet
+
+Context router:
+    EfficientNet-B2
+"""
+
+__all__ = []
+
+utils/__init__.py
+
+"""
+Utility functions for MAPVNet.
+
+Includes dataset handling, deterministic data splitting,
+evaluation metrics, and supporting utilities.
+"""
+
+__all__ = []
+
+training/__init__.py
+
+"""
+Training utilities and entry points for MAPVNet.
+
+Includes training pipelines for:
+    - EfficientNet-B2 context router
+    - Resolution-specific segmentation specialists
+    - Unified baseline model
+"""
+
+evaluation/__init__.py
+
+"""
+Evaluation utilities for MAPVNet.
+
+Provides evaluation workflows for the context router,
+resolution-specific specialists, and unified baseline.
+"""
